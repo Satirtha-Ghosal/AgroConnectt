@@ -44,7 +44,7 @@ export default function Search() {
       if (queryParam) params.append("name", queryParam);
 
       const res = await fetch(
-        `https://advisory-tallou-sobhanbose-a5410a15.koyeb.app/marketplace?${params.toString()}`
+        `https://advisory-tallou-sobhanbose-a5410a15.koyeb.app/marketplace/?${params.toString()}`
       );
 
       if (!res.ok) {
