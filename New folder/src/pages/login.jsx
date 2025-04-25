@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useUser } from '../context/context';
 import FullScreenLoader from "../components/fullScreenLoader";
 import { toast } from 'react-toastify'
+import { User } from 'lucide-react';
 
 export default function Login(){
     const [show, setShow] = useState(false);
@@ -13,7 +14,7 @@ export default function Login(){
     const [verified, setVerified] = useState(false);
     const [otp, setOtp] = useState('');
     const navigate = useNavigate();
-    const { setUser } = useUser();
+    const { user, setUser } = useUser();
 
     const  handleSendOtp = async (e) => {
         setShow(true);
@@ -66,7 +67,12 @@ export default function Login(){
     
             if (res.ok) {
                 toast.success("Logged In Successfully!!!");
-                setUser({ phone, role });
+                setUser({
+                    phone: phone,
+                    role: role,
+                });
+                
+                console.log('Context :', user.phone);
                 if(role === 'farmer'){
                     navigate('/')
                 }
@@ -105,7 +111,6 @@ export default function Login(){
             const data = await res.json();
     
             if (res.ok) {
-                
                 toast.success("OTP Resent Successfully!!!");
 
             } else {
@@ -120,6 +125,10 @@ export default function Login(){
         }
         setShow(false);
     };
+
+    useEffect(() => {
+        console.log('User updated:', user);
+     }, [user]);
 
     return (
         <div className="w-screen h-screen flex items-center justify-center px-4 bg-green-50">
