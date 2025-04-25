@@ -13,7 +13,7 @@ export default function Register() {
     const [wrong, setWrong] = useState(false);
     const [otp, setOtp] = useState('');
     const navigate = useNavigate();
-    const { setUser } = useUser();
+    const { user, setUser } = useUser();
 
     const  handleSendOtp = async (e) => {
         setShow(true);
