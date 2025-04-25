@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useUser } from '../context/context';
 import FullScreenLoader from "../components/fullScreenLoader";
@@ -66,7 +66,10 @@ export default function Register() {
     
             if (res.ok) {
                 toast.success("Registered Successfully!!!");
-                setUser({ phone, role });
+                setUser({
+                    phone: phone,
+                    role: role,
+                });
                 if(role === 'farmer'){
                     navigate('../farmer/editFarmerProfile')
                 }
@@ -119,6 +122,10 @@ export default function Register() {
         }
         setShow(false);
     };
+
+    useEffect(() => {
+        console.log('User updated:', user);
+     }, [user]);
 
     return (
         <div className="w-screen h-screen flex items-center justify-center px-4 bg-green-50">
