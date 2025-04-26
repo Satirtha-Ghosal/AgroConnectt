@@ -7,6 +7,7 @@ const KEY = import.meta.env.VITE_API_KEY;
 const hf = new HfInference(KEY);
 
 const AIAddProduct = () => {
+  
   const [json, setJson] = useState({});
   const [isProduceExist, setIsProduceExist] = useState(false);
   const [produceID, setProduceID] = useState();
