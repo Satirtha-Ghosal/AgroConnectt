@@ -7,7 +7,6 @@ const KEY = import.meta.env.VITE_API_KEY;
 const hf = new HfInference(KEY);
 
 const AIAddProduct = () => {
-  
   const [json, setJson] = useState({});
   const [isProduceExist, setIsProduceExist] = useState(false);
   const [produceID, setProduceID] = useState();
@@ -169,10 +168,11 @@ const AIAddProduct = () => {
     let attempt = 0;
     let success = false;
 
-    const aiReply = response?.choices?.[0]?.message?.content || "";
+    
+    while (attempt < MAX_RETRIES && !success) {
+      const aiReply = response?.choices?.[0]?.message?.content || "";
         const isValid = await validateAndParseJson(aiReply);
 
-    while (attempt < MAX_RETRIES && !success) {
       try {
         console.log(`🔄 Attempt ${attempt + 1}`);
         setMessages((prev) => [...prev, { sender: "ai", text: `⏳ Processing... (Attempt ${attempt + 1})` }]);
