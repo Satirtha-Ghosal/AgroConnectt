@@ -10,7 +10,7 @@ const AIChat = ({ role = "farmer" }) => {
   const [messages, setMessages] = useState([
     {
       sender: "ai",
-      text: `👋 Hi ${user.role === "farmer" ? "Farmer" : "Consumer"}! I’m AgroBot. Ask me any general questions you have.`,
+      text: `👋 Hi ${user.role === "farmer" ? "Farmer" : "Consumer"}! I’m AgroBot. I am here to help you know more on agro products.`,
     },
   ]);
   const [input, setInput] = useState("");
