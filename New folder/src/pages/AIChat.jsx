@@ -2,11 +2,11 @@ import React, { useState, useRef, useEffect } from "react";
 import { HfInference } from "@huggingface/inference";
 import { useUser } from "../context/context";
 
-const KEY = import.meta.env.VITE_API_KEY
+const KEY = import.meta.env.VITE_API_KEY;
 const hf = new HfInference(KEY);
 
 const AIChat = ({ role = "farmer" }) => {
-  const {user} = useUser();
+  const { user } = useUser();
   const [messages, setMessages] = useState([
     {
       sender: "ai",
@@ -15,7 +15,57 @@ const AIChat = ({ role = "farmer" }) => {
   ]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const [listening, setListening] = useState(false);
   const messagesEndRef = useRef(null);
+
+  const recognitionRef = useRef(null);
+  const listeningRef = useRef(false);
+
+  useEffect(() => {
+    if ("webkitSpeechRecognition" in window) {
+      const recognition = new webkitSpeechRecognition();
+      recognition.continuous = true;
+      recognition.interimResults = true;
+      recognition.lang = "en-US";
+
+      recognition.onresult = (event) => {
+        const transcript = Array.from(event.results)
+          .map(result => result[0].transcript)
+          .join("");
+        setInput(transcript);
+      };
+
+      recognition.onend = () => {
+        setListening(false);
+        if (listeningRef.current) {
+          recognition.start(); // restart if user wants continuous
+        }
+      };
+
+      recognition.onerror = (event) => {
+        console.error("Speech recognition error:", event.error);
+        setListening(false);
+        listeningRef.current = false;
+      };
+
+      recognitionRef.current = recognition;
+    }
+  }, []);
+
+  const toggleListening = () => {
+    const recognition = recognitionRef.current;
+    if (!recognition) return;
+
+    if (listening) {
+      recognition.stop();
+      setListening(false);
+      listeningRef.current = false;
+    } else {
+      recognition.start();
+      setListening(true);
+      listeningRef.current = true;
+    }
+  };
 
   const SYSTEM_PROMPT =
     user.role === "farmer"
@@ -64,12 +114,10 @@ const AIChat = ({ role = "farmer" }) => {
 
   return (
     <div className="mt-16 mb-16 fixed inset-0 bg-white flex flex-col">
-      {/* Header */}
       <div className="bg-green-600 text-white px-4 py-3 font-semibold text-lg shadow-md">
         {user.role === "farmer" ? "Farmer" : "Consumer"} ChatBot – AgroBot
       </div>
 
-      {/* Messages */}
       <div className="flex-1 overflow-y-auto px-4 py-3 bg-gray-50 space-y-3 text-sm">
         {messages.map((msg, i) => (
           <div
@@ -90,7 +138,6 @@ const AIChat = ({ role = "farmer" }) => {
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Input Box */}
       <div className="border-t bg-white px-3 py-3">
         <div className="flex items-center gap-2">
           <input
@@ -101,6 +148,15 @@ const AIChat = ({ role = "farmer" }) => {
             className="flex-1 border px-4 py-2 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
             placeholder="Ask your question..."
           />
+          <button
+            onClick={toggleListening}
+            className={`px-3 py-2 rounded-full text-sm font-medium border ${
+              listening ? "bg-red-100 text-red-600" : "bg-gray-100 text-gray-800"
+            }`}
+            title="Toggle microphone"
+          >
+            🎤
+          </button>
           <button
             onClick={handleSend}
             disabled={loading}
