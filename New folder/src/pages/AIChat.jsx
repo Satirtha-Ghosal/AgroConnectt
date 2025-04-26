@@ -7,6 +7,9 @@ import ReactJsLoader from "react-js-loader";
 const KEY = import.meta.env.VITE_API_KEY;
 const hf = new HfInference(KEY);
 
+
+
+
 const AIChat = ({ role = "farmer" }) => {
   const { user } = useUser();
   const [messages, setMessages] = useState([
