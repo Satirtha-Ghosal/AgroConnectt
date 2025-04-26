@@ -168,11 +168,7 @@ const AIAddProduct = () => {
     let attempt = 0;
     let success = false;
 
-    
     while (attempt < MAX_RETRIES && !success) {
-      const aiReply = response?.choices?.[0]?.message?.content || "";
-        const isValid = await validateAndParseJson(aiReply);
-
       try {
         console.log(`🔄 Attempt ${attempt + 1}`);
         setMessages((prev) => [...prev, { sender: "ai", text: `⏳ Processing... (Attempt ${attempt + 1})` }]);
@@ -186,7 +182,8 @@ const AIAddProduct = () => {
           max_tokens: 200,
         });
 
-        
+        const aiReply = response?.choices?.[0]?.message?.content || "";
+        const isValid = await validateAndParseJson(aiReply);
         delay(2000);
 
         if (!isValid) throw new Error("Invalid JSON");
