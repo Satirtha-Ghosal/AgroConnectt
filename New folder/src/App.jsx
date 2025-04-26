@@ -26,6 +26,7 @@ import ProductDetails from './pages/farmerProductDetails';
 import FarmerProductPage from './pages/farmerproductpage';
 import AIChat from './pages/AIChat';
 import NearestFarmers from './pages/nearestFarmer';
+import AIAddProduct from './pages/addProductBot';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -43,6 +44,7 @@ const router = createBrowserRouter(
         <Route path='dashboard' element={<FarmerDashboard />} />
         <Route path='editFarmerProfile' element={<EditFarmerProfile />} />
         <Route path='addProduct' element={<AddProduct />} />
+        <Route path='addProductBot' element={<AIAddProduct />} />
         <Route path='products' element={<FarmerProduct />} />
         <Route path='products/:id' element={<ProductDetails />} />
         <Route path='editProduct/:id' element={<EditProduct />} />
